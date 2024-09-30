@@ -1,45 +1,36 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 
-class ChatModal {
-  String? sender;
-  String? receiver;
-  String? message;
-  String? image;
-
-  Timestamp time;
-  bool isEdited;
-
+class ChatModal extends GetxController {
+  String? sender, receiver, message,image;
+  Timestamp? time;
 
   ChatModal({
     required this.sender,
     required this.receiver,
     required this.message,
-    required this.image,
     required this.time,
-    this.isEdited = false,
+    required this.image,
   });
 
-
-  factory ChatModal.fromMap(Map<String, dynamic> map) {
+  factory ChatModal.fromMap(Map m1) {
     return ChatModal(
-      sender: map['sender'] as String?,
-      receiver: map['receiver'] as String?,
-      message: map['message'] as String? ,
-      image: map['image'] ,
-      time: map['time'] as Timestamp,
-      isEdited: map['isEdited'] ?? false,
+      sender: m1['sender'],
+      receiver: m1['receiver'],
+      message: m1['message'],
+      time: m1['time'],
+      image: m1['image'],
     );
   }
 
-
-  Map<String, dynamic> toMap(ChatModal chat) {
+  Map<String, dynamic> toMap(ChatModal chat)
+  {
     return {
-      'sender': chat.sender,
-      'receiver': chat.receiver,
-      'message': chat.message,
-      'image': chat.image,
-      'time': chat.time,
-      'isEdited': chat.isEdited,
+      'sender' : chat.sender,
+      'receiver' : chat.receiver,
+      'message' : chat.message,
+      'time' : chat.time,
+      'image' : chat.image,
     };
   }
 }

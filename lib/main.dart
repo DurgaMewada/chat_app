@@ -1,6 +1,7 @@
 
 import 'package:chat_app/View/Screens/home_screen.dart';
 import 'package:chat_app/View/Screens/signUp_screen.dart';
+import 'package:chat_app/View/Screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,7 +26,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       getPages: [
-        GetPage(name: '/', page: () => SignIn()),
+        GetPage(name: '/', page: () => SplashScreen()),
+        GetPage(name: '/signin', page: () => SignIn()),
         GetPage(name: '/signUp', page: () => SignUp()),
         GetPage(name: '/home', page: () => HomeScreen()),
         GetPage(name: '/chat', page: () => ChatScreen()),

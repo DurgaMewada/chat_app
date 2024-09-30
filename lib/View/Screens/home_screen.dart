@@ -1,152 +1,198 @@
+import 'dart:developer';
+
 import 'package:chat_app/Modal/user_modal.dart';
 import 'package:chat_app/Services/auth_services.dart';
 import 'package:chat_app/Services/cloud_firestore_services.dart';
 import 'package:chat_app/Services/google_auth_services.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Controller/chat_controller.dart';
+import 'chat_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    ChatController chatController = ChatController();
     return Scaffold(
+      backgroundColor: const Color(0xff0d0603),
       appBar: AppBar(
-        title: Text('Home Page '),
-        centerTitle: true,
-        actions: [
-          IconButton(
-              onPressed: () async {
-               await AuthService.authService.signOutUser();
-              await GoogleAuthService.googleAuthService.singOutFormGoogle();
-                User? user = AuthService.authService.getUser();
-                if (user == null) {
-                  Get.offAndToNamed('/');
-                }
-              },
-              icon: Icon(Icons.logout)),
-        ],
+        backgroundColor: const Color(0xff0d0603),
+        leading: const Icon(
+          Icons.menu_outlined,
+          color: Colors.white,
+        ),
+        title: const Text(
+          'WeChat',
+          style: TextStyle(color: Colors.white),
+        ),
+        scrolledUnderElevation: 0.01,
       ),
       drawer: Drawer(
-        child: FutureBuilder(future: CloudFireStoreService.cloudFireStoreService.readCurrentUser(), builder: (context,snapshot){
-          if(snapshot.hasError)
-            {
-              return Center(child: Text(snapshot.error.toString()),);
-            }
-          if(snapshot.connectionState == ConnectionState.waiting)
-            {
-              return const Center(child: CircularProgressIndicator(),);
-            }
+        backgroundColor: Colors.white,
+        child: FutureBuilder(
+            future:
+                CloudFireStoreService.cloudFireStoreService.readCurrentUser(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(snapshot.error.toString()),
+                );
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
               Map? data = snapshot.data!.data();
               UsersModal usersModal = UsersModal.fromMap(data!);
-              return Obx(
-                  ()=>Column(
-                    children: [
-                      DrawerHeader(child: CircleAvatar(radius: 50,backgroundImage: NetworkImage(usersModal.image!),)),
-                      Text(usersModal.name!),
-                      Text(usersModal.email!),
-                      Text(usersModal.phone!),
-                    ],
-                  )
+              return Column(
+                children: [
+                  DrawerHeader(
+                      child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: NetworkImage(usersModal.image!),
+                  )),
+                  Text(usersModal.name!),
+                  Text(usersModal.email!),
+                  Text(usersModal.phone!),
+                  SizedBox(height: 15,),
+                  ListTile(
+                    title: Text("Safety"),
+                    trailing: Icon(
+                      Icons.safety_check,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 5,),
+                  ListTile(
+                    title: Text("More"),
+                    trailing: Icon(
+                      Icons.more_rounded,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 5,),
+                  ListTile(
+                    title: Text("Setting"),
+                    trailing: Icon(
+                      Icons.settings,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 5,),
+                  ListTile(
+                    title: Text("Find Person"),
+                    trailing: Icon(
+                      Icons.wifi_find_rounded,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 5,),
+                  ListTile(
+                    title: Text("Infomation"),
+                    trailing: Icon(
+                      Icons.info,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 5,),
+                  ListTile(
+                    title: Text("Help"),
+                    trailing: Icon(
+                      Icons.help_center_rounded,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 5,),
+                  ListTile(
+                    onTap: () async {
+                      await AuthService.authService.signOutUser();
+                      await GoogleAuthService.googleAuthService
+                          .singOutFormGoogle();
+                      User? user = AuthService.authService.getUser();
+                      if (user == null) {
+                        Get.offAndToNamed('/');
+                      }
+                    },
+                    title: Text("Log Out"),
+                    trailing: Icon(
+                      Icons.logout,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
               );
-
-        }),
+            }),
       ),
-      body: FutureBuilder(future: CloudFireStoreService.cloudFireStoreService.readAllUser(), builder: (context,snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text(snapshot.error.toString()),);
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator(),);
-        }
-        List data = snapshot.data!.docs;
-        List<UsersModal> userList = [];
-        for (var user in data) {
-          userList.add(UsersModal.fromMap(user.data()));
-        }
-         return  ListView.builder(
-         itemCount: userList.length,
-    itemBuilder: (context, index)
-        {
-          return Column(
-            children: [
-              ListTile(
-                onTap: () {
-                  chatController.getReceiver(
-                    userList[index].email!,
-                    userList[index].name!,
-                    userList[index].image!,
-                  );
-                  Get.toNamed('/chat');
-                },
-                trailing: CircleAvatar(
-                  radius: 10,
-                  backgroundColor: Colors.green,
-                  child: Text('1', style: TextStyle(
+      body: FutureBuilder(
+          future: CloudFireStoreService.cloudFireStoreService.readAllUser(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(snapshot.error.toString()),
+              );
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            List data = snapshot.data!.docs;
+            List<UsersModal> userList = [];
+            for (var user in data) {
+              userList.add(UsersModal.fromMap(user.data()));
+            }
+            return Column(
+              children: [
+                const SizedBox(
+                  height: 30,
+                ),
+                Container(
+                  height: 610,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
                       color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(40),
+                          topRight: Radius.circular(40))),
+                  child: ListView.builder(
+                      itemCount: userList.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                onTap: () {
+                                  log("receiver name ${userList[index].email!}");
+                                  chatController.getReceiver(
+                                    userList[index].email!,
+                                    userList[index].name!,
+                                    userList[index].image!,
+                                  );
+                                  log("receiver name after click${chatController.receiverEmail.value}");
 
-                      fontSize: 10
-
-                  ),),
-                ),
-                title: Text(userList[index].name!),
-                subtitle: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                  stream: CloudFireStoreService.cloudFireStoreService
-                      .getLastMessageStream(userList[index].email!),
-                  builder: (context, messageSnapshot) {
-                    if (messageSnapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return Text('Loading...');
-                    }
-
-                    if (messageSnapshot.hasError) {
-                      return Text('Error: ${messageSnapshot.error}');
-                    }
-
-                    if (messageSnapshot.hasData &&
-                        messageSnapshot.data!.docs.isNotEmpty) {
-                      var lastMessageData = messageSnapshot.data!.docs[0];
-                      String lastMessage =
-                          lastMessageData['message'] ?? 'No message';
-                      return Container(
-                        height: 25,
-                        child: Text(
-                          lastMessage,
-                          style: TextStyle(
-                            overflow: TextOverflow.fade,
-                            fontSize: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.04, // Responsive font size
+                                  Get.toNamed('/chat');
+                                },
+                                title: Text(userList[index].name!),
+                                subtitle: const Text('Welcome ,start chatting'),
+                                leading: CircleAvatar(
+                                  radius: 30,
+                                  backgroundImage:
+                                      NetworkImage(userList[index].image!),
+                                ),
+                              )
+                            ],
                           ),
-                        ),
-                      );
-                    } else {
-                      return Text('No messages yet');
-                    }
-                  },
+                        );
+                      }),
                 ),
-                leading: CircleAvatar(
-                  backgroundImage: NetworkImage(userList[index].image!),
-                ),
-              )
-            ],
-          );
-        }
-         );
-      }
-      ),
+              ],
+            );
+          }),
     );
   }
 }
-
-
-
-
-
-

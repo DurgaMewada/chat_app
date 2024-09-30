@@ -16,4 +16,14 @@ class UsersModal {
         phone: m1['phone'],
         token: m1['token']);
   }
+  Map<String, String?> toMap(UsersModal user)
+  {
+    return {
+      'name' : user.name,
+      'email' : user.email,
+      'token' : user.token,
+      'phone' : user.phone,
+      'image' : user.image,
+    };
+  }
 }
