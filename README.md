@@ -1,6 +1,13 @@
+
+
 # chat_app
 
-A new Flutter project.
+<p align="center">
+    <img src = "https://github.com/user-attachments/assets/0b2946ec-0d54-4054-a205-15e4c5e9434c"  height=10% >
+    <img src = "https://github.com/user-attachments/assets/a3d20956-db92-4a34-adf1-ad1cb6794024" height=10% >
+    <video height="450" src="https://github.com/user-attachments/assets/35cf553c-5338-46f1-af9c-a53c979a7144"/>
+    
+
 
 ## Getting Started
 
